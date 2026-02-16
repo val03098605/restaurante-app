@@ -40,14 +40,6 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Crear archivo .env para CI
-        run: |
-          echo "DB_HOST=127.0.0.1" >> .env
-          echo "DB_USER=root" >> .env
-          echo "DB_PASSWORD=root" >> .env
-          echo "DB_NAME=restaurante_test" >> .env
-          echo "JWT_SECRET=testsecret" >> .env
-
       - name: Esperar a MySQL
         run: sleep 20
 
@@ -75,4 +67,10 @@ jobs:
           "
 
       - name: Ejecutar pruebas
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: restaurante_test
+          JWT_SECRET: testsecret
         run: npm test
