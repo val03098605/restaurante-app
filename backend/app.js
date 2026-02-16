@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const productoRoutes = require('./routes/productoRoutes');
@@ -10,10 +11,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rutas públicas
+/* =========================
+   SERVIR FRONTEND
+========================= */
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+/* =========================
+   RUTAS API
+========================= */
+
+// Autenticación
 app.use('/api/auth', authRoutes);
 
-//Rutas protegidas
+// Productos
 app.use('/api/productos', productoRoutes);
 
 // Ruta protegida de prueba
@@ -24,10 +34,10 @@ app.get('/api/protegida', verifyToken, (req, res) => {
     });
 });
 
-// Ruta base
-app.get('/', async (req, res) => {
+// Ruta de prueba API
+app.get('/api', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT 1');
+        await db.query('SELECT 1');
         res.send('API Restaurante funcionando y MySQL conectado correctamente');
     } catch (error) {
         console.error(error);
