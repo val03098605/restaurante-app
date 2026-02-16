@@ -26,7 +26,7 @@ app.use('/api/auth', authRoutes);
 // Productos
 app.use('/api/productos', productoRoutes);
 
-// Ruta protegida de prueba
+// Ruta protegida
 app.get('/api/protegida', verifyToken, (req, res) => {
     res.json({
         message: 'Ruta protegida funcionando',
@@ -43,6 +43,14 @@ app.get('/api', async (req, res) => {
         console.error(error);
         res.status(500).send('Error conectando a MySQL');
     }
+});
+
+/* =========================
+   IMPORTANTE: PRODUCCIÓN
+========================= */
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 module.exports = app;
