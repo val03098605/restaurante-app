@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Restaurante</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-restaurant">
+
+<div class="dashboard">
+    <h1>🍽 Restaurante Gourmet</h1>
+    <button onclick="logout()">Cerrar Sesión</button>
+
+    <div id="adminSection" style="display:none;">
+        <h2>Agregar Producto</h2>
+        <form id="productoForm">
+            <input type="text" id="nombre" placeholder="Nombre del producto" required>
+            <input type="text" id="descripcion" placeholder="Descripción" required>
+            <input type="number" id="precio" placeholder="Precio" required>
+            <button type="submit">Crear</button>
+        </form>
+    </div>
+
+    <h2>Menú</h2>
+    <div id="productosContainer" class="productos-grid"></div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
