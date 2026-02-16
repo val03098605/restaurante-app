@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../app');
+const db = require('../config/db');
 
 describe('Auth Routes', () => {
 
@@ -29,4 +30,10 @@ describe('Auth Routes', () => {
         expect(res.body.token).toBeDefined();
     });
 
+});
+
+afterAll(async () => {
+    if (db.end) {
+        await db.end();
+    }
 });
