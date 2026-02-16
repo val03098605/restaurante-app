@@ -10,6 +10,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: restaurante_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     defaults:
       run:
         working-directory: backend
@@ -26,13 +40,36 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Crear archivo .env temporal
+      - name: Crear archivo .env para CI
         run: |
-          echo "JWT_SECRET=testsecret" >> .env
-          echo "DB_HOST=localhost" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
           echo "DB_USER=root" >> .env
-          echo "DB_PASSWORD=password" >> .env
-          echo "DB_NAME=restaurante" >> .env
+          echo "DB_PASSWORD=root" >> .env
+          echo "DB_NAME=restaurante_test" >> .env
+          echo "JWT_SECRET=testsecret" >> .env
+
+      - name: Esperar a MySQL
+        run: sleep 15
+
+      - name: Crear tablas necesarias
+        run: |
+          npx mysql -h 127.0.0.1 -u root -proot restaurante_test -e "
+          CREATE TABLE IF NOT EXISTS users (
+              id INT AUTO_INCREMENT PRIMARY KEY,
+              nombre VARCHAR(100),
+              email VARCHAR(100) UNIQUE,
+              password VARCHAR(255),
+              rol ENUM('admin','cliente') DEFAULT 'cliente'
+          );
+          CREATE TABLE IF NOT EXISTS productos (
+              id INT AUTO_INCREMENT PRIMARY KEY,
+              nombre VARCHAR(100),
+              descripcion TEXT,
+              precio DECIMAL(10,2),
+              creado_por INT,
+              imagen VARCHAR(255)
+          );
+          "
 
       - name: Ejecutar pruebas
         run: npm test
